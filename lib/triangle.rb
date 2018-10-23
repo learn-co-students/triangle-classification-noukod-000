@@ -1,34 +1,29 @@
 class Triangle
-
-  attr_accessor :equilateral, :isosceles ,:scalene
-
-  def initailize(equilateral, isosceles, scalene)
-    @equilateral = equilateral
-    @isosceles = isosceles
-    @scalene = scalene
+  attr_reader :a, :b, :c
+  def initialize(a, b, c)
+    @a = a
+    @b = b
+    @c = c
   end
 
-  def kind(triangle)
-    self.equilateral = triangle
-    self.isosceles = triangle
-    self.scalene = triangle
-    if triangle.class != Triangle
-      begin
-        raise TriangleError
-        rescue  TriangleError  => error
-          puts error.message
-        end
-      else
-        triangle.equilateral = self
-        triangle.isosceles = self
-        triangle.scalene = self
-   end
- end
-end
-
-class TriangleError < StandardError
- def message
-   "ERROR"
+  def kind
+    validate_triangle
+    if a == b && b == c
+      :equilateral
+    elsif a == b || b == c || a == c
+      :isosceles
+    else
+      :scalene
+    end
   end
- end
+
+  def validate_triangle
+    real_triangle = [(a + b > c), (a + c > b), (b + c > a)]
+    [a, b, c].each { |s| real_triangle << false if s <= 0 }
+    raise TriangleError if real_triangle.include?(false)
+  end
+
+  class TriangleError < StandardError
+  end
+
 end
